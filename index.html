@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math en Jeans - Nossa Equipe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para a aba ativa */
+        .tab-active {
+            border-bottom-color: #3b82f6; /* Azul */
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Estilos para o jogo Torre de Hanói */
+        .hanoi-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            width: 100%;
+            height: 320px;
+            padding: 20px 0;
+            border-radius: 8px;
+            background-color: #f0f9ff;
+        }
+        .peg-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 25%;
+            height: 100%;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .peg-wrapper:hover {
+            background-color: #e0e7ff; /* Um highlight sutil no hover */
+        }
+        #classic-hanoi-game-container .peg-wrapper,
+        #variant1-hanoi-game-container .peg-wrapper {
+             width: 33.33%;
+        }
+        .peg {
+            position: relative;
+            width: 12px;
+            height: 90%;
+            background-color: #a5b4fc;
+            border-radius: 6px;
+            /* As propriedades flex foram removidas para usar um posicionamento mais preciso */
+            transition: background-color 0.2s;
+        }
+        .peg::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px; /* Base mais larga que o maior disco */
+            height: 12px;
+            background-color: #6b7280;
+            border-radius: 4px;
+        }
+        .peg:hover {
+            background-color: #818cf8;
+        }
+        .disk {
+            height: 22px;
+            border-radius: 6px;
+            cursor: grab;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 4px solid rgba(0,0,0,0.2); /* Cria uma ilusão 3D */
+            box-sizing: border-box; /* Importante para a borda não adicionar altura */
+            position: absolute; /* Alterado para controle de posição preciso */
+            left: 50%; /* Adicionado para centralizar horizontalmente */
+            transform: translateX(-50%); /* Adicionado para centralizar horizontalmente */
+        }
+        .selected-disk {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+            transform: translateX(-50%) translateY(-30px); /* Ajustado para funcionar com o novo posicionamento */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Cabeçalho e Título -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-600">Equipe Math en Jeans</h1>
+            <p class="text-lg text-gray-600 mt-2">Explorando os desafios da matemática com criatividade e colaboração.</p>
+        </header>
+
+        <!-- Menu de Navegação (Abas) -->
+        <nav class="bg-white rounded-lg shadow-md mb-8 sticky top-4 z-10">
+            <ul class="flex flex-wrap justify-center p-2 md:p-4">
+                <!-- Adicionamos a aba "Início" -->
+                <li class="m-1 md:m-2"><a href="#inicio" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Início</a></li>
+                <li class="m-1 md:m-2"><a href="#hanoi" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Torre de Hanói</a></li>
+                <li class="m-1 md:m-2"><a href="#variante1" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Variante 1</a></li>
+                <li class="m-1 md:m-2"><a href="#variante2" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Variante 2</a></li>
+                <li class="m-1 md:m-2"><a href="#steiner" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Pizza de Steiner</a></li>
+                <li class="m-1 md:m-2"><a href="#coelhos" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Problema dos Coelhos</a></li>
+                <li class="m-1 md:m-2"><a href="#decaimento" class="tab-link inline-block p-3 md:p-4 text-gray-600 border-b-4 border-transparent hover:text-blue-500 hover:border-blue-500 transition-colors duration-300 rounded-t-lg">Decaimento Radioativo</a></li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo das Páginas -->
+        <main id="content" class="bg-white p-6 md:p-8 rounded-lg shadow-lg min-h-[60vh]">
+            
+            <!-- Página Inicial -->
+            <div id="inicio" class="page-content">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Bem-vindo ao nosso Projeto!</h2>
+                <p class="mb-4">Somos uma equipe de estudantes apaixonados por matemática, participando da iniciativa "Math en Jeans". Este projeto nos desafia a pensar como verdadeiros pesquisadores, explorando problemas matemáticos abertos e apresentando nossas descobertas.</p>
+                <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-800">Nossa Equipe</h3>
+                    <p class="mb-2">Nossa equipe é formada por (coloque aqui os nomes dos integrantes). Juntos, mergulhamos em temas fascinantes, desde quebra-cabeças clássicos até problemas complexos de modelagem.</p>
+                    <p>Neste site, você encontrará um resumo de cada um dos desafios que investigamos. Navegue pelas abas para conhecer mais sobre cada problema e as soluções que desenvolvemos.</p>
+                </div>
+            </div>
+
+            <!-- Torre de Hanói -->
+            <div id="hanoi" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Torre de Hanói Clássica</h2>
+                <p class="mb-4">O quebra-cabeça clássico com três hastes. O objetivo é mover todos os discos da primeira para a última haste, movendo um disco de cada vez e nunca colocando um disco maior sobre um menor.</p>
+                
+                 <!-- Controles do Jogo Clássico -->
+                <div class="flex flex-wrap items-center justify-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <label for="classic-disk-count" class="font-medium">Número de Discos:</label>
+                        <input type="number" id="classic-disk-count" value="4" min="3" max="8" class="w-20 p-2 border border-gray-300 rounded-md">
+                    </div>
+                    <button id="classic-undo-btn" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition-colors">Desfazer Movimento</button>
+                    <button id="classic-reset-btn" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">Reiniciar</button>
+                </div>
+
+                <!-- Jogo Clássico -->
+                <div id="classic-hanoi-game-container" class="hanoi-container">
+                    <div class="peg-wrapper" data-peg="0"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="1"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="2"><div class="peg"></div></div>
+                </div>
+
+                <!-- Informações do Jogo Clássico -->
+                <div class="text-center mt-4">
+                    <p class="text-lg">Movimentos: <span id="classic-move-count" class="font-bold">0</span></p>
+                    <p id="classic-win-message" class="text-2xl font-bold text-green-600 mt-2 hidden">Parabéns, você conseguiu!</p>
+                </div>
+            </div>
+
+            <!-- Variante 1 -->
+            <div id="variante1" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Variante 1: Movimentos Adjacentes</h2>
+                <p class="mb-4">Esta variação segue as regras do jogo clássico, mas com uma restrição: um disco só pode ser movido para uma haste adjacente (vizinhas). Por exemplo, da haste central, um disco pode ir para a esquerda ou direita, mas das hastes das pontas, só há um movimento possível.</p>
+                
+                 <!-- Controles do Jogo Variante 1 -->
+                <div class="flex flex-wrap items-center justify-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <label for="variant1-disk-count" class="font-medium">Número de Discos:</label>
+                        <input type="number" id="variant1-disk-count" value="4" min="3" max="8" class="w-20 p-2 border border-gray-300 rounded-md">
+                    </div>
+                    <button id="variant1-undo-btn" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition-colors">Desfazer Movimento</button>
+                    <button id="variant1-reset-btn" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">Reiniciar</button>
+                </div>
+
+                <!-- Jogo Variante 1 -->
+                <div id="variant1-hanoi-game-container" class="hanoi-container">
+                    <div class="peg-wrapper" data-peg="0"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="1"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="2"><div class="peg"></div></div>
+                </div>
+
+                <!-- Informações do Jogo Variante 1 -->
+                <div class="text-center mt-4">
+                    <p class="text-lg">Movimentos: <span id="variant1-move-count" class="font-bold">0</span></p>
+                    <p id="variant1-win-message" class="text-2xl font-bold text-green-600 mt-2 hidden">Parabéns, você conseguiu!</p>
+                </div>
+            </div>
+
+            <!-- Variante 2 -->
+            <div id="variante2" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Variante 2: Torre de Hanói com 4 Hastes</h2>
+                <p class="mb-4">Esta é uma variação do problema clássico com duas restrições importantes: usamos quatro hastes em vez de três, e um disco só pode ser movido para uma haste adjacente. Ou seja, da haste 2, um disco pode ir para a 1 ou 3, mas não diretamente para a 4. O objetivo continua sendo mover todos os discos para a última haste.</p>
+                
+                <!-- Controles do Jogo -->
+                <div class="flex flex-wrap items-center justify-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <label for="disk-count" class="font-medium">Número de Discos:</label>
+                        <input type="number" id="disk-count" value="4" min="3" max="8" class="w-20 p-2 border border-gray-300 rounded-md">
+                    </div>
+                    <button id="undo-btn" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition-colors">Desfazer Movimento</button>
+                    <button id="reset-btn" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">Reiniciar</button>
+                </div>
+                
+                <!-- Jogo -->
+                <div id="hanoi-game-container" class="hanoi-container">
+                    <div class="peg-wrapper" data-peg="0"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="1"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="2"><div class="peg"></div></div>
+                    <div class="peg-wrapper" data-peg="3"><div class="peg"></div></div>
+                </div>
+
+                <!-- Informações do Jogo -->
+                <div class="text-center mt-4">
+                    <p class="text-lg">Movimentos: <span id="move-count" class="font-bold">0</span></p>
+                    <p id="win-message" class="text-2xl font-bold text-green-600 mt-2 hidden">Parabéns, você conseguiu!</p>
+                </div>
+            </div>
+
+            <!-- Pizza de Steiner -->
+            <div id="steiner" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Pizza de Steiner</h2>
+                <p class="mb-4">O problema da "pizza" de Jakob Steiner pergunta: qual o número máximo de pedaços em que uma pizza (um disco) pode ser dividida com 'n' cortes retos? Investigamos a fórmula geral para este problema e suas generalizações.</p>
+                
+                <div class="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Calculadora de Cortes de Pizza</h3>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
+                        <label for="steiner-cuts" class="font-medium">Número de Cortes:</label>
+                        <input type="number" id="steiner-cuts" value="10" min="0" max="100" class="w-24 p-2 border border-gray-300 rounded-md">
+                        <button id="calculate-steiner-btn" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">Calcular</button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Nº de Cortes (n)</th>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Nº Máximo de Pedaços (p)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="steiner-results">
+                                <!-- Os resultados serão inseridos aqui -->
+                            </tbody>
+                        </table>
+                         <p class="text-center mt-4 text-gray-600">Fórmula: <span class="font-mono bg-gray-200 p-1 rounded">p = (n² + n + 2) / 2</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problema dos Coelhos -->
+            <div id="coelhos" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">O Problema dos Coelhos de Fibonacci</h2>
+                <p class="mb-4">Este é um problema clássico que deu origem à famosa Sequência de Fibonacci. Ele descreve o crescimento de uma população de coelhos sob condições ideais, onde um casal de coelhos leva um mês para amadurecer e, a partir daí, gera um novo casal a cada mês.</p>
+                
+                <div class="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Calculadora de Crescimento da População</h3>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
+                        <label for="fibonacci-months" class="font-medium">Número de Meses:</label>
+                        <input type="number" id="fibonacci-months" value="12" min="1" max="50" class="w-24 p-2 border border-gray-300 rounded-md">
+                        <button id="calculate-fibonacci-btn" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">Calcular</button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Mês</th>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Casais Adultos</th>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Casais Bebês</th>
+                                    <th class="p-3 text-left font-semibold text-gray-600">Total de Casais</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fibonacci-results">
+                                <!-- Os resultados serão inseridos aqui via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decaimento Radioativo -->
+            <div id="decaimento" class="page-content hidden">
+                <h2 class="text-3xl font-bold mb-4 text-blue-700">Decaimento Radioativo</h2>
+                <p class="mb-4">Neste desafio, modelamos matematicamente como a quantidade de uma substância radioativa diminui ao longo do tempo. O conceito de "meia-vida" é central aqui, e ele nos leva ao estudo de funções exponenciais e logaritmos para prever a quantidade de material restante após um certo período.</p>
+                 <!-- Adicione aqui gráficos, fórmulas ou imagens -->
+            </div>
+
+        </main>
+        
+        <!-- Rodapé -->
+        <footer class="text-center mt-8 text-gray-500">
+            <p>&copy; 2025 - Equipe Math en Jeans. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page-content');
+        const tabLinks = document.querySelectorAll('.tab-link');
+
+        function showPage(pageId, clickedLink) {
+            // Esconde todas as páginas
+            pages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // Remove a classe ativa de todas as abas
+            tabLinks.forEach(link => {
+                link.classList.remove('tab-active');
+            });
+
+            // Mostra a página selecionada
+            const pageToShow = document.getElementById(pageId);
+            if (pageToShow) {
+                pageToShow.classList.remove('hidden');
+            }
+
+            // Adiciona a classe ativa na aba clicada
+            if (clickedLink) {
+                clickedLink.classList.add('tab-active');
+            }
+        }
+
+        // --- LÓGICA DO JOGO TORRE DE HANÓI (VARIANTE 2) ---
+
+        const diskInput = document.getElementById('disk-count');
+        const undoBtn = document.getElementById('undo-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        // Seletor corrigido para pegar apenas as hastes do jogo da variante
+        const pegWrappers = document.querySelectorAll('#hanoi-game-container .peg-wrapper');
+        const moveCountSpan = document.getElementById('move-count');
+        const winMessage = document.getElementById('win-message');
+
+        let towers = [[], [], [], []];
+        let moveHistory = [];
+        let selectedPegIndex = -1;
+        let moveCount = 0;
+        const diskColors = ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80', '#2dd4bf', '#22d3ee', '#818cf8'];
+
+        function initGame() {
+            const numDisks = parseInt(diskInput.value);
+            towers = [[], [], [], []];
+            for (let i = numDisks; i > 0; i--) {
+                towers[0].push(i);
+            }
+            moveHistory = [];
+            selectedPegIndex = -1;
+            moveCount = 0;
+            winMessage.classList.add('hidden');
+            render();
+        }
+
+        function render() {
+            pegWrappers.forEach((wrapper, pegIndex) => {
+                const pegElement = wrapper.querySelector('.peg');
+                pegElement.innerHTML = ''; // Limpa a haste
+                const disksInPeg = towers[pegIndex];
+                disksInPeg.forEach((diskSize, index) => { // Adicionado 'index' para calcular a posição vertical
+                    const disk = document.createElement('div');
+                    disk.classList.add('disk');
+                    disk.dataset.size = diskSize;
+                    
+                    // Lógica para calcular a largura do disco de forma responsiva (sem alterações)
+                    const numDisks = parseInt(diskInput.value);
+                    const maxDiskWidth = 120; // Largura máxima em pixels
+                    const minDiskWidth = 40;  // Largura mínima em pixels
+                    const widthRange = maxDiskWidth - minDiskWidth;
+                    const widthStep = numDisks > 1 ? widthRange / (numDisks - 1) : widthRange;
+                    const diskWidth = minDiskWidth + (diskSize - 1) * widthStep;
+                    disk.style.width = `${diskWidth}px`;
+                    
+                    // Lógica ajustada para empilhar os discos sobre a base
+                    const baseTopOffset = 10; // Posição do topo da base (12px de altura da base - 2px de offset)
+                    const diskBottomPosition = baseTopOffset + (index * 24); // 22px altura do disco + 2px espaçamento
+                    disk.style.bottom = `${diskBottomPosition}px`;
+                    
+                    disk.style.backgroundColor = diskColors[diskSize - 1];
+                    pegElement.appendChild(disk);
+                });
+            });
+
+            // Atualiza a contagem de movimentos
+            moveCountSpan.textContent = moveCount;
+            checkWinCondition();
+        }
+
+        function handlePegClick(pegIndex) {
+            winMessage.classList.add('hidden');
+
+            if (selectedPegIndex === -1) { // Nenhum disco selecionado
+                if (towers[pegIndex].length > 0) {
+                    selectedPegIndex = pegIndex;
+                    const topDiskEl = pegWrappers[pegIndex].querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.add('selected-disk');
+                }
+            } else { // Um disco já está selecionado, tentando mover
+                // Desmarca visualmente
+                const prevSelectedWrapper = pegWrappers[selectedPegIndex];
+                if(prevSelectedWrapper) {
+                    const topDiskEl = prevSelectedWrapper.querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.remove('selected-disk');
+                }
+
+                // Valida o movimento
+                const sourcePeg = towers[selectedPegIndex];
+                const destPeg = towers[pegIndex];
+                const diskToMove = sourcePeg[sourcePeg.length - 1];
+                const isAdjacent = Math.abs(selectedPegIndex - pegIndex) === 1;
+
+                if (isAdjacent && (destPeg.length === 0 || diskToMove < destPeg[destPeg.length - 1])) {
+                    // Movimento válido
+                    const disk = sourcePeg.pop();
+                    destPeg.push(disk);
+                    moveHistory.push({ from: selectedPegIndex, to: pegIndex });
+                    moveCount++;
+                } else {
+                    // Movimento inválido ou clique na mesma haste para desmarcar
+                    // Apenas desmarca, não faz nada
+                }
+
+                selectedPegIndex = -1;
+                render();
+            }
+        }
+        
+        function undoMove() {
+            if (moveHistory.length > 0) {
+                const lastMove = moveHistory.pop();
+                const disk = towers[lastMove.to].pop();
+                towers[lastMove.from].push(disk);
+                moveCount--;
+                winMessage.classList.add('hidden');
+                render();
+            }
+        }
+
+        function checkWinCondition() {
+            const numDisks = parseInt(diskInput.value);
+            // Condição de vitória: todos os discos estão na última haste
+            if (towers[3].length === numDisks) {
+                winMessage.classList.remove('hidden');
+            }
+        }
+        
+        // --- LÓGICA DO JOGO TORRE DE HANÓI (VARIANTE 1) ---
+
+        const variant1DiskInput = document.getElementById('variant1-disk-count');
+        const variant1UndoBtn = document.getElementById('variant1-undo-btn');
+        const variant1ResetBtn = document.getElementById('variant1-reset-btn');
+        const variant1PegWrappers = document.querySelectorAll('#variant1-hanoi-game-container .peg-wrapper');
+        const variant1MoveCountSpan = document.getElementById('variant1-move-count');
+        const variant1WinMessage = document.getElementById('variant1-win-message');
+
+        let variant1Towers = [[], [], []];
+        let variant1MoveHistory = [];
+        let variant1SelectedPegIndex = -1;
+        let variant1MoveCount = 0;
+
+        function initVariant1Game() {
+            const numDisks = parseInt(variant1DiskInput.value);
+            variant1Towers = [[], [], []];
+            for (let i = numDisks; i > 0; i--) {
+                variant1Towers[0].push(i);
+            }
+            variant1MoveHistory = [];
+            variant1SelectedPegIndex = -1;
+            variant1MoveCount = 0;
+            variant1WinMessage.classList.add('hidden');
+            renderVariant1Game();
+        }
+
+        function renderVariant1Game() {
+            variant1PegWrappers.forEach((wrapper, pegIndex) => {
+                const pegElement = wrapper.querySelector('.peg');
+                pegElement.innerHTML = ''; // Limpa a haste
+                const disksInPeg = variant1Towers[pegIndex];
+                disksInPeg.forEach((diskSize, index) => {
+                    const disk = document.createElement('div');
+                    disk.classList.add('disk');
+                    disk.dataset.size = diskSize;
+                    
+                    const numDisks = parseInt(variant1DiskInput.value);
+                    const maxDiskWidth = 120;
+                    const minDiskWidth = 40;
+                    const widthRange = maxDiskWidth - minDiskWidth;
+                    const widthStep = numDisks > 1 ? widthRange / (numDisks - 1) : widthRange;
+                    const diskWidth = minDiskWidth + (diskSize - 1) * widthStep;
+                    disk.style.width = `${diskWidth}px`;
+                    
+                    const baseTopOffset = 10;
+                    const diskBottomPosition = baseTopOffset + (index * 24);
+                    disk.style.bottom = `${diskBottomPosition}px`;
+                    
+                    disk.style.backgroundColor = diskColors[diskSize - 1]; // Reutiliza as mesmas cores
+                    pegElement.appendChild(disk);
+                });
+            });
+            variant1MoveCountSpan.textContent = variant1MoveCount;
+            checkVariant1WinCondition();
+        }
+
+        function handleVariant1PegClick(pegIndex) {
+            variant1WinMessage.classList.add('hidden');
+
+            if (variant1SelectedPegIndex === -1) {
+                if (variant1Towers[pegIndex].length > 0) {
+                    variant1SelectedPegIndex = pegIndex;
+                    const topDiskEl = variant1PegWrappers[pegIndex].querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.add('selected-disk');
+                }
+            } else {
+                const prevSelectedWrapper = variant1PegWrappers[variant1SelectedPegIndex];
+                if(prevSelectedWrapper) {
+                    const topDiskEl = prevSelectedWrapper.querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.remove('selected-disk');
+                }
+
+                const sourcePeg = variant1Towers[variant1SelectedPegIndex];
+                const destPeg = variant1Towers[pegIndex];
+                const diskToMove = sourcePeg[sourcePeg.length - 1];
+                const isAdjacent = Math.abs(variant1SelectedPegIndex - pegIndex) === 1;
+
+                if (isAdjacent && (destPeg.length === 0 || diskToMove < destPeg[destPeg.length - 1])) {
+                    const disk = sourcePeg.pop();
+                    destPeg.push(disk);
+                    variant1MoveHistory.push({ from: variant1SelectedPegIndex, to: pegIndex });
+                    variant1MoveCount++;
+                }
+
+                variant1SelectedPegIndex = -1;
+                renderVariant1Game();
+            }
+        }
+
+        function undoVariant1Move() {
+            if (variant1MoveHistory.length > 0) {
+                const lastMove = variant1MoveHistory.pop();
+                const disk = variant1Towers[lastMove.to].pop();
+                variant1Towers[lastMove.from].push(disk);
+                variant1MoveCount--;
+                variant1WinMessage.classList.add('hidden');
+                renderVariant1Game();
+            }
+        }
+
+        function checkVariant1WinCondition() {
+            const numDisks = parseInt(variant1DiskInput.value);
+            if (variant1Towers[2].length === numDisks) {
+                variant1WinMessage.classList.remove('hidden');
+            }
+        }
+
+        // --- LÓGICA DO JOGO TORRE DE HANÓI (CLÁSSICO) ---
+
+        const classicDiskInput = document.getElementById('classic-disk-count');
+        const classicUndoBtn = document.getElementById('classic-undo-btn');
+        const classicResetBtn = document.getElementById('classic-reset-btn');
+        const classicPegWrappers = document.querySelectorAll('#classic-hanoi-game-container .peg-wrapper');
+        const classicMoveCountSpan = document.getElementById('classic-move-count');
+        const classicWinMessage = document.getElementById('classic-win-message');
+
+        let classicTowers = [[], [], []];
+        let classicMoveHistory = [];
+        let classicSelectedPegIndex = -1;
+        let classicMoveCount = 0;
+
+        function initClassicGame() {
+            const numDisks = parseInt(classicDiskInput.value);
+            classicTowers = [[], [], []];
+            for (let i = numDisks; i > 0; i--) {
+                classicTowers[0].push(i);
+            }
+            classicMoveHistory = [];
+            classicSelectedPegIndex = -1;
+            classicMoveCount = 0;
+            classicWinMessage.classList.add('hidden');
+            renderClassicGame();
+        }
+
+        function renderClassicGame() {
+            classicPegWrappers.forEach((wrapper, pegIndex) => {
+                const pegElement = wrapper.querySelector('.peg');
+                pegElement.innerHTML = ''; // Limpa a haste
+                const disksInPeg = classicTowers[pegIndex];
+                disksInPeg.forEach((diskSize, index) => {
+                    const disk = document.createElement('div');
+                    disk.classList.add('disk');
+                    disk.dataset.size = diskSize;
+                    
+                    const numDisks = parseInt(classicDiskInput.value);
+                    const maxDiskWidth = 120;
+                    const minDiskWidth = 40;
+                    const widthRange = maxDiskWidth - minDiskWidth;
+                    const widthStep = numDisks > 1 ? widthRange / (numDisks - 1) : widthRange;
+                    const diskWidth = minDiskWidth + (diskSize - 1) * widthStep;
+                    disk.style.width = `${diskWidth}px`;
+                    
+                    const baseTopOffset = 10;
+                    const diskBottomPosition = baseTopOffset + (index * 24);
+                    disk.style.bottom = `${diskBottomPosition}px`;
+                    
+                    disk.style.backgroundColor = diskColors[diskSize - 1];
+                    pegElement.appendChild(disk);
+                });
+            });
+            classicMoveCountSpan.textContent = classicMoveCount;
+            checkClassicWinCondition();
+        }
+
+        function handleClassicPegClick(pegIndex) {
+            classicWinMessage.classList.add('hidden');
+
+            if (classicSelectedPegIndex === -1) {
+                if (classicTowers[pegIndex].length > 0) {
+                    classicSelectedPegIndex = pegIndex;
+                    const topDiskEl = classicPegWrappers[pegIndex].querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.add('selected-disk');
+                }
+            } else {
+                const prevSelectedWrapper = classicPegWrappers[classicSelectedPegIndex];
+                if(prevSelectedWrapper) {
+                    const topDiskEl = prevSelectedWrapper.querySelector('.disk:last-child');
+                    if(topDiskEl) topDiskEl.classList.remove('selected-disk');
+                }
+
+                const sourcePeg = classicTowers[classicSelectedPegIndex];
+                const destPeg = classicTowers[pegIndex];
+                const diskToMove = sourcePeg[sourcePeg.length - 1];
+
+                if (destPeg.length === 0 || diskToMove < destPeg[destPeg.length - 1]) {
+                    const disk = sourcePeg.pop();
+                    destPeg.push(disk);
+                    classicMoveHistory.push({ from: classicSelectedPegIndex, to: pegIndex });
+                    classicMoveCount++;
+                }
+
+                classicSelectedPegIndex = -1;
+                renderClassicGame();
+            }
+        }
+
+        function undoClassicMove() {
+            if (classicMoveHistory.length > 0) {
+                const lastMove = classicMoveHistory.pop();
+                const disk = classicTowers[lastMove.to].pop();
+                classicTowers[lastMove.from].push(disk);
+                classicMoveCount--;
+                classicWinMessage.classList.add('hidden');
+                renderClassicGame();
+            }
+        }
+
+        function checkClassicWinCondition() {
+            const numDisks = parseInt(classicDiskInput.value);
+            // Vitória se todos os discos estiverem na última haste
+            if (classicTowers[2].length === numDisks) {
+                classicWinMessage.classList.remove('hidden');
+            }
+        }
+
+        // --- Event Listeners ---
+        
+        // Navegação por Abas
+        tabLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const pageId = link.getAttribute('href').substring(1);
+                showPage(pageId, link);
+            });
+        });
+
+        // Jogo Variante 2
+        pegWrappers.forEach(wrapper => {
+            wrapper.addEventListener('click', () => handlePegClick(parseInt(wrapper.dataset.peg)));
+        });
+        diskInput.addEventListener('change', initGame);
+        resetBtn.addEventListener('click', initGame);
+        undoBtn.addEventListener('click', undoMove);
+
+        // Jogo Variante 1
+        variant1PegWrappers.forEach(wrapper => {
+            wrapper.addEventListener('click', () => handleVariant1PegClick(parseInt(wrapper.dataset.peg)));
+        });
+        variant1DiskInput.addEventListener('change', initVariant1Game);
+        variant1ResetBtn.addEventListener('click', initVariant1Game);
+        variant1UndoBtn.addEventListener('click', undoVariant1Move);
+
+        // Jogo Clássico
+        classicPegWrappers.forEach(wrapper => {
+            wrapper.addEventListener('click', () => handleClassicPegClick(parseInt(wrapper.dataset.peg)));
+        });
+        classicDiskInput.addEventListener('change', initClassicGame);
+        classicResetBtn.addEventListener('click', initClassicGame);
+        classicUndoBtn.addEventListener('click', undoClassicMove);
+
+
+        // --- LÓGICA DO PROBLEMA DOS COELHOS (FIBONACCI) ---
+
+        const fibonacciMonthsInput = document.getElementById('fibonacci-months');
+        const calculateFibonacciBtn = document.getElementById('calculate-fibonacci-btn');
+        const fibonacciResultsBody = document.getElementById('fibonacci-results');
+
+        function calculateFibonacci() {
+            const months = parseInt(fibonacciMonthsInput.value);
+            
+            // Limpa a tabela anterior
+            fibonacciResultsBody.innerHTML = '';
+
+            if (isNaN(months) || months < 1 || months > 50) {
+                fibonacciResultsBody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-red-500">Por favor, insira um número válido de meses (1 a 50).</td></tr>';
+                return;
+            }
+
+            let adults = 0;
+            let babies = 1;
+            let total = 1;
+
+            for (let i = 1; i <= months; i++) {
+                const newRow = document.createElement('tr');
+                newRow.classList.add('border-t');
+                
+                newRow.innerHTML = `
+                    <td class="p-3 font-bold text-gray-700">${i}</td>
+                    <td class="p-3">${adults}</td>
+                    <td class="p-3">${babies}</td>
+                    <td class="p-3 font-semibold text-blue-600">${total}</td>
+                `;
+                
+                fibonacciResultsBody.appendChild(newRow);
+
+                // Calcula o próximo mês
+                const newBabies = adults;
+                const newAdults = total;
+                
+                adults = newAdults;
+                babies = newBabies;
+                total = adults + babies;
+            }
+        }
+
+        // --- LÓGICA DA PIZZA DE STEINER ---
+
+        const steinerCutsInput = document.getElementById('steiner-cuts');
+        const calculateSteinerBtn = document.getElementById('calculate-steiner-btn');
+        const steinerResultsBody = document.getElementById('steiner-results');
+
+        function calculateSteiner() {
+            const cuts = parseInt(steinerCutsInput.value);
+            
+            steinerResultsBody.innerHTML = ''; // Limpa os resultados anteriores
+
+            if (isNaN(cuts) || cuts < 0 || cuts > 100) {
+                steinerResultsBody.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-red-500">Por favor, insira um número válido de cortes (0 a 100).</td></tr>';
+                return;
+            }
+
+            for (let n = 0; n <= cuts; n++) {
+                const pieces = (n * n + n + 2) / 2;
+                const newRow = document.createElement('tr');
+                newRow.classList.add('border-t');
+                
+                newRow.innerHTML = `
+                    <td class="p-3 font-bold text-gray-700">${n}</td>
+                    <td class="p-3 font-semibold text-blue-600">${pieces}</td>
+                `;
+                
+                steinerResultsBody.appendChild(newRow);
+            }
+        }
+
+        // Event Listeners Fibonacci
+        calculateFibonacciBtn.addEventListener('click', calculateFibonacci);
+
+        // Event Listeners Steiner
+        calculateSteinerBtn.addEventListener('click', calculateSteiner);
+
+
+        // Define a página inicial como padrão ao carregar
+        window.onload = function() {
+            showPage('inicio', document.querySelector('a[href="#inicio"]'));
+            initGame(); // Inicia o jogo da variante 2
+            initVariant1Game(); // Inicia o jogo da variante 1
+            initClassicGame(); // Inicia o jogo clássico
+            calculateFibonacci(); // Calcula a tabela de Fibonacci inicial
+            calculateSteiner(); // Calcula a tabela de Steiner inicial
+        };
+    </script>
+
+</body>
+</html>
